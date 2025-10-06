@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n'; // Move i18n configuration to separate file
-import IntroPage from "./intro/intropage.jsx";
+import IntroPage from "./introduction/Intro.jsx";
 import Chikitsa365App from "./App.jsx";
 import PatientApp from "./PatientApp.jsx";
 import ChatBot from "./Chatbot.jsx";
