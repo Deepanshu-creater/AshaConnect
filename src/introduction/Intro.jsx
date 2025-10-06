@@ -4,7 +4,7 @@ import {
   Heart, Users, Stethoscope, Shield, ArrowRight,
   FileText, Activity, MapPin, Clock
 } from 'lucide-react';
-import './IntroPage.css';
+import './Intro.css';
 
 const IntroPage = () => {
   const navigate = useNavigate();
