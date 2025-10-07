@@ -11,7 +11,7 @@ import {
   Shield, ArrowRight, CheckCircle, Trash2, Edit3,
   Star, TrendingUp, Activity, Phone, Mail, Map, Edit3,
   Book, HelpCircle, Mic2, Volume2, FileDown, Share2,
-  User, Home, ClipboardList, MessageSquare, CheckCircle, AlertCircle, XCircle, Paperclip, Trash2,
+  User, Home, ClipboardList, MessageSquare, CheckCircle, AlertCircle, XCircle, Paperclip,
   Key, Users as UsersIcon, FolderPlus
 } from 'lucide-react';
 import './App.css';
