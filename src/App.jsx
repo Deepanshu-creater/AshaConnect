@@ -8,8 +8,7 @@ import {
   MessageCircle, BookOpen, UserPlus, Download, Upload,
   Languages, AlertTriangle, Pill, Clock, MapPin, ChevronRight,
   Plus, Filter, MoreVertical, Play, StopCircle, Send,
-  Shield, ArrowRight, CheckCircle, Trash2, Edit3,
-  Star, TrendingUp, Activity, Phone, Mail, Map, Edit3,
+  Shield,  Star, TrendingUp, Activity, Phone, Mail, Map, Edit3,
   Book, HelpCircle, Mic2, Volume2, FileDown, Share2,
   User, Home, ClipboardList, MessageSquare, CheckCircle, AlertCircle, XCircle, Paperclip,
   Key, Users as UsersIcon, FolderPlus
