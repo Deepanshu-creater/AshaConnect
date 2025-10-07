@@ -2041,171 +2041,418 @@ const AshaConnectApp = () => {
             </section>
         </div>
     );
-    const Schedule = () => {
-        const [activeFilter, setActiveFilter] = useState('today');
-        const scheduledTasks = [
-            {
-                id: 1,
-                type: 'home_visit',
-                patient: 'Ramesh Kumar',
-                area: 'Sector 5, Urban Slum',
-                address: 'House No. 45, Street 8',
-                time: '09:00 AM',
-                date: '2024-01-15',
-                duration: '45 mins',
-                priority: 'high',
-                status: 'pending',
-                tasks: ['Blood pressure check', 'Medication follow-up', 'Health education']
-            },
-            {
-                id: 2,
-                type: 'vaccination',
-                patient: 'Priya Sharma',
-                area: 'Sector 3, Rural Cluster',
-                address: 'Anganwadi Center, Village Road',
-                time: '11:30 AM',
-                date: '2024-01-15',
-                duration: '2 hours',
-                priority: 'medium',
-                status: 'pending',
-                tasks: ['Child immunization', 'Mother counseling', 'Growth monitoring']
-            }
-        ];
-        const getTasksByFilter = () => {
-            switch (activeFilter) {
-                case 'today':
-                    return scheduledTasks;
-                case 'upcoming':
-                    return scheduledTasks.filter(task => task.status === 'pending');
-                default:
-                    return scheduledTasks;
-            }
+   const Schedule = () => {
+    const [activeFilter, setActiveFilter] = useState('today');
+    const [selectedDrive, setSelectedDrive] = useState(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    
+    // Vaccination drives by ward/area
+    const vaccinationDrives = [
+        {
+            id: 1,
+            type: 'routine_immunization',
+            ward_number: 'Ward 12',
+            area: 'Sector 5, Urban Area',
+            location: 'Anganwadi Center, Block C',
+            target_population: 245,
+            coverage_goal: '95%',
+            time: '09:00 AM - 02:00 PM',
+            date: '2024-01-15',
+            duration: '5 hours',
+            priority: 'high',
+            status: 'pending',
+            vaccines: ['BCG', 'OPV', 'DPT', 'Hepatitis B', 'Measles'],
+            target_age_group: '0-5 years',
+            households_covered: 45,
+            children_registered: 67,
+            tasks: [
+                'Cold chain maintenance',
+                'Vaccine administration',
+                'Registration of beneficiaries',
+                'AEFI monitoring',
+                'Documentation and reporting'
+            ],
+            supplies_required: [
+                'Vaccine carriers',
+                'Ice packs',
+                'Syringes (0.5ml & 2ml)',
+                'AD syringes',
+                'Diluents',
+                'Cotton & Spirit',
+                'MMR kits',
+                'Reporting forms'
+            ],
+            health_worker_assigned: 'ASHA Sunita',
+            supervisor: 'ANM Rajeshwari',
+            special_instructions: 'Focus on left-out and drop-out children. Check migration families.'
+        },
+        {
+            id: 2,
+            type: 'special_campaign',
+            ward_number: 'Ward 8',
+            area: 'Sector 3, Rural Cluster',
+            location: 'Primary School Building',
+            target_population: 180,
+            coverage_goal: '100%',
+            time: '10:00 AM - 04:00 PM',
+            date: '2024-01-16',
+            duration: '6 hours',
+            priority: 'medium',
+            status: 'pending',
+            vaccines: ['MR Vaccine', 'Vitamin A'],
+            target_age_group: '9 months - 15 years',
+            households_covered: 32,
+            children_registered: 89,
+            tasks: [
+                'Community mobilization',
+                'Line listing of children',
+                'Vaccine administration',
+                'Vitamin A supplementation',
+                'Adverse event monitoring'
+            ],
+            supplies_required: [
+                'MR vaccine vials',
+                'Vitamin A capsules',
+                'Syringes & needles',
+                'Antiseptic solution',
+                'AEFI kit',
+                'Muster rolls'
+            ],
+            health_worker_assigned: 'ASHA Priya',
+            supervisor: 'MO Dr. Verma',
+            special_instructions: 'Coordinate with school teachers. Ensure session microplan is followed.'
+        },
+        {
+            id: 3,
+            type: 'outreach_session',
+            ward_number: 'Ward 15',
+            area: 'Tribal Hamlet',
+            location: 'Sub-Center Building',
+            target_population: 95,
+            coverage_goal: '90%',
+            time: '08:00 AM - 01:00 PM',
+            date: '2024-01-17',
+            duration: '5 hours',
+            priority: 'high',
+            status: 'upcoming',
+            vaccines: ['All Routine Vaccines'],
+            target_age_group: '0-5 years & Pregnant Women',
+            households_covered: 28,
+            children_registered: 42,
+            tasks: [
+                'Pre-session preparation',
+                'Vaccine transportation',
+                'Beneficiary registration',
+                'Immunization services',
+                'Record updating'
+            ],
+            supplies_required: [
+                'Vaccine carrier with ice packs',
+                'Immunization register',
+                'Mother-child protection cards',
+                'Weighing scale',
+                'Health education materials'
+            ],
+            health_worker_assigned: 'ASHA Laxmi',
+            supervisor: 'ANM Geeta',
+            special_instructions: 'Focus on hard-to-reach areas. Track defaulters.'
+        }
+    ];
+
+    const getDrivesByFilter = () => {
+        const today = '2024-01-15';
+        switch (activeFilter) {
+            case 'today':
+                return vaccinationDrives.filter(drive => drive.date === today);
+            case 'upcoming':
+                return vaccinationDrives.filter(drive => drive.status === 'upcoming' || drive.date > today);
+            case 'completed':
+                return vaccinationDrives.filter(drive => drive.status === 'completed');
+            default:
+                return vaccinationDrives;
+        }
+    };
+
+    const getPriorityStyles = (priority) => {
+        const styles = {
+            high: { background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' },
+            medium: { background: '#fffbeb', color: '#d97706', borderColor: '#fed7aa' },
+            low: { background: '#f0fdf4', color: '#16a34a', borderColor: '#bbf7d0' }
         };
-        const getPriorityStyles = (priority) => {
-            const styles = {
-                high: { background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' },
-                medium: { background: '#fffbeb', color: '#d97706', borderColor: '#fed7aa' },
-                low: { background: '#f0fdf4', color: '#16a34a', borderColor: '#bbf7d0' }
-            };
-            return styles[priority] || styles.medium;
+        return styles[priority] || styles.medium;
+    };
+
+    const getTypeIcon = (type) => {
+        const icons = {
+            routine_immunization: Shield,
+            special_campaign: Users,
+            outreach_session: MapPin,
+            catch_up: Target
         };
-        const getTypeIcon = (type) => {
-            const icons = {
-                home_visit: MapPin,
-                vaccination: Play,
-                health_camp: Calendar,
-                follow_up: CheckCircle
-            };
-            const IconComponent = icons[type] || MapPin;
-            return <IconComponent size={16} />;
+        const IconComponent = icons[type] || Shield;
+        return <IconComponent size={16} />;
+    };
+
+    const getTypeLabel = (type) => {
+        const labels = {
+            routine_immunization: 'Routine Immunization',
+            special_campaign: 'Special Campaign',
+            outreach_session: 'Outreach Session',
+            catch_up: 'Catch-up Drive'
         };
-        const getTypeLabel = (type) => {
-            const labels = {
-                home_visit: translations[currentLanguage].homeVisit,
-                vaccination: translations[currentLanguage].vaccinationDrive,
-                health_camp: translations[currentLanguage].healthCamp,
-                follow_up: translations[currentLanguage].followUp
-            };
-            return labels[type] || 'Visit';
-        };
-        return (
-            <div className="tab-content">
-                <div className="tab-header">
-                    <h2>{translations[currentLanguage].scheduleTitle}</h2>
-                </div>
-                <section className="section">
-                    <div className="schedule-header">
-                        <div className="schedule-filters">
-                            {[
-                                { key: 'today', label: translations[currentLanguage].filterToday },
-                                { key: 'upcoming', label: translations[currentLanguage].filterUpcoming }
-                            ].map(filter => (
-                                <button
-                                    key={filter.key}
-                                    onClick={() => setActiveFilter(filter.key)}
-                                    className={`filter-btn ${activeFilter === filter.key ? 'active' : ''}`}
-                                >
-                                    {filter.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="schedule-list">
-                        {getTasksByFilter().map(task => (
-                            <div key={task.id} className="schedule-card">
-                                <div className="schedule-card-header">
-                                    <div className="task-type">
-                                        <div className="type-badge" style={getPriorityStyles(task.priority)}>
-                                            {getTypeIcon(task.type)}
-                                            {getTypeLabel(task.type)}
-                                        </div>
-                                        <div className={`status-badge ${task.status}`}>
-                                            {task.status === 'completed' ? <CheckCircle size={12} /> : <Clock size={12} />}
-                                            {task.status === 'completed' ? translations[currentLanguage].completed : translations[currentLanguage].pending}
-                                        </div>
-                                    </div>
-                                    <div className="task-time">
-                                        <Clock size={14} />
-                                        {task.time} • {task.duration}
-                                    </div>
-                                </div>
-                                <div className="task-details">
-                                    <h4>{task.patient || 'Community Service'}</h4>
-                                    <div className="task-location">
-                                        <MapPin size={14} />
-                                        <span>{task.area} • {task.address}</span>
-                                    </div>
-                                </div>
-                                <div className="task-list">
-                                    <p>{translations[currentLanguage].tasksPerformed}</p>
-                                    <div className="tasks-container">
-                                        {task.tasks.map((taskItem, index) => (
-                                            <span key={index} className="task-tag">
-                                                {taskItem}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                                {task.status !== 'completed' && (
-                                    <div className="task-actions">
-                                        <button className="btn-primary">
-                                            <CheckCircle size={14} />
-                                            {translations[currentLanguage].markComplete}
-                                        </button>
-                                        <button className="btn-outline">
-                                            <AlertCircle size={14} />
-                                            {translations[currentLanguage].reschedule}
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+        return labels[type] || 'Vaccination Drive';
+    };
+
+    const handleMarkComplete = (driveId) => {
+        // API call to mark drive as completed
+        console.log('Marking drive as complete:', driveId);
+    };
+
+    const totalChildrenCovered = vaccinationDrives.reduce((sum, drive) => 
+        sum + (drive.children_registered || 0), 0
+    );
+
+    const totalHouseholds = vaccinationDrives.reduce((sum, drive) => 
+        sum + (drive.households_covered || 0), 0
+    );
+
+    return (
+        <div className="tab-content">
+            <div className="tab-header">
+                <h2>Vaccination Drive Schedule</h2>
+                <p>ASHA Worker Immunization Sessions by Ward</p>
+            </div>
+
+            <section className="section">
+                <div className="schedule-header">
+                    <div className="schedule-filters">
+                        {[
+                            { key: 'today', label: "Today's Drives" },
+                            { key: 'upcoming', label: 'Upcoming Sessions' },
+                            { key: 'completed', label: 'Completed' }
+                        ].map(filter => (
+                            <button
+                                key={filter.key}
+                                onClick={() => setActiveFilter(filter.key)}
+                                className={`filter-btn ${activeFilter === filter.key ? 'active' : ''}`}
+                            >
+                                {filter.label}
+                            </button>
                         ))}
                     </div>
-                    {getTasksByFilter().length === 0 && (
-                        <div className="empty-state">
-                            <Calendar size={48} />
-                            <h3>{translations[currentLanguage].noTasksTitle}</h3>
-                            <p>{translations[currentLanguage].noTasksSubtitle}</p>
+                </div>
+
+                <div className="schedule-list">
+                    {getDrivesByFilter().map(drive => (
+                        <div key={drive.id} className="schedule-card">
+                            <div className="schedule-card-header">
+                                <div className="task-type">
+                                    <div className="type-badge" style={getPriorityStyles(drive.priority)}>
+                                        {getTypeIcon(drive.type)}
+                                        {getTypeLabel(drive.type)}
+                                    </div>
+                                    <div className="ward-badge">
+                                        {drive.ward_number}
+                                    </div>
+                                </div>
+                                <div className="task-time">
+                                    <Clock size={14} />
+                                    {drive.time} • {drive.duration}
+                                </div>
+                            </div>
+
+                            <div className="task-details">
+                                <h4>{drive.area}</h4>
+                                <div className="task-location">
+                                    <MapPin size={14} />
+                                    <span>{drive.location}</span>
+                                </div>
+                                <div className="drive-stats">
+                                    <div className="stat-item">
+                                        <Users size={14} />
+                                        <span>Target: {drive.target_population} children</span>
+                                    </div>
+                                    <div className="stat-item">
+                                        <Target size={14} />
+                                        <span>Goal: {drive.coverage_goal} coverage</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="vaccine-list">
+                                <p><strong>Vaccines:</strong></p>
+                                <div className="tasks-container">
+                                    {drive.vaccines.map((vaccine, index) => (
+                                        <span key={index} className="vaccine-tag">
+                                            {vaccine}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="task-list">
+                                <p><strong>ASHA Tasks:</strong></p>
+                                <div className="tasks-container">
+                                    {drive.tasks.map((task, index) => (
+                                        <span key={index} className="task-tag">
+                                            {task}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="drive-meta">
+                                <div className="meta-item">
+                                    <span>Health Worker:</span>
+                                    <strong>{drive.health_worker_assigned}</strong>
+                                </div>
+                                <div className="meta-item">
+                                    <span>Supervisor:</span>
+                                    <strong>{drive.supervisor}</strong>
+                                </div>
+                            </div>
+
+                            {drive.status !== 'completed' && (
+                                <div className="task-actions">
+                                    <button 
+                                        className="btn-primary"
+                                        onClick={() => handleMarkComplete(drive.id)}
+                                    >
+                                        <CheckCircle size={14} />
+                                        Mark Session Complete
+                                    </button>
+                                    <button 
+                                        className="btn-outline"
+                                        onClick={() => {
+                                            setSelectedDrive(drive);
+                                            setShowDetailsModal(true);
+                                        }}
+                                    >
+                                        <Info size={14} />
+                                        View Details
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </section>
-                <div className="stats-grid">
-                    <div className="stat-card">
-                        <div className="stat-content">
-                            <h3>{scheduledTasks.length}</h3>
-                            <p>{translations[currentLanguage].todayTasks}</p>
-                        </div>
+                    ))}
+                </div>
+
+                {getDrivesByFilter().length === 0 && (
+                    <div className="empty-state">
+                        <Calendar size={48} />
+                        <h3>No Vaccination Drives Scheduled</h3>
+                        <p>There are no immunization sessions scheduled for the selected period.</p>
                     </div>
-                    <div className="stat-card">
-                        <div className="stat-content">
-                            <h3>{scheduledTasks.filter(t => t.priority === 'high').length}</h3>
-                            <p>{translations[currentLanguage].highPriority}</p>
+                )}
+            </section>
+
+            <div className="stats-grid">
+                <div className="stat-card">
+                    <div className="stat-content">
+                        <h3>{getDrivesByFilter().length}</h3>
+                        <p>Scheduled Drives</p>
+                    </div>
+                    <Users className="stat-icon" />
+                </div>
+                <div className="stat-card">
+                    <div className="stat-content">
+                        <h3>{totalChildrenCovered}</h3>
+                        <p>Children Registered</p>
+                    </div>
+                    <Target className="stat-icon" />
+                </div>
+                <div className="stat-card">
+                    <div className="stat-content">
+                        <h3>{totalHouseholds}</h3>
+                        <p>Households Covered</p>
+                    </div>
+                    <Home className="stat-icon" />
+                </div>
+                <div className="stat-card">
+                    <div className="stat-content">
+                        <h3>
+                            {vaccinationDrives.filter(d => d.priority === 'high').length}
+                        </h3>
+                        <p>High Priority Wards</p>
+                    </div>
+                    <AlertCircle className="stat-icon" />
+                </div>
+            </div>
+
+            {/* Drive Details Modal */}
+            {showDetailsModal && selectedDrive && (
+                <DriveDetailsModal 
+                    drive={selectedDrive}
+                    onClose={() => setShowDetailsModal(false)}
+                    onComplete={handleMarkComplete}
+                />
+            )}
+        </div>
+    );
+};
+
+// Additional modal component for drive details
+const DriveDetailsModal = ({ drive, onClose, onComplete }) => {
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h3>Vaccination Drive Details - {drive.ward_number}</h3>
+                    <button onClick={onClose} className="close-btn">×</button>
+                </div>
+                
+                <div className="modal-body">
+                    <div className="drive-sections">
+                        <div className="section">
+                            <h4>Session Information</h4>
+                            <div className="info-grid">
+                                <div className="info-item">
+                                    <span>Location:</span>
+                                    <strong>{drive.location}, {drive.area}</strong>
+                                </div>
+                                <div className="info-item">
+                                    <span>Date & Time:</span>
+                                    <strong>{drive.date} • {drive.time}</strong>
+                                </div>
+                                <div className="info-item">
+                                    <span>Target Population:</span>
+                                    <strong>{drive.target_population} children ({drive.target_age_group})</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="section">
+                            <h4>Vaccines & Supplies</h4>
+                            <div className="supplies-list">
+                                {drive.supplies_required.map((supply, index) => (
+                                    <div key={index} className="supply-item">
+                                        <CheckCircle size={14} />
+                                        {supply}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="section">
+                            <h4>Special Instructions</h4>
+                            <p className="instructions">{drive.special_instructions}</p>
                         </div>
                     </div>
                 </div>
+
+                <div className="modal-actions">
+                    <button className="btn-primary" onClick={() => onComplete(drive.id)}>
+                        <CheckCircle size={16} />
+                        Mark Session Complete
+                    </button>
+                    <button className="btn-outline" onClick={onClose}>
+                        Close
+                    </button>
+                </div>
             </div>
-        );
-    };
+        </div>
+    );
+};
     const NotificationsTab = () => (
         <div className="tab-content">
             <div className="tab-header">
