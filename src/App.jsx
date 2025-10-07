@@ -11,7 +11,7 @@ import {
   Shield,  Star, TrendingUp, Activity, Phone, Mail, Map, Edit3,
   Book, HelpCircle, Mic2, Volume2, FileDown, Share2,
   User, Home, ClipboardList, MessageSquare, CheckCircle, AlertCircle, XCircle, Paperclip,
-  Key, Users as UsersIcon, FolderPlus
+  Key, Users as UsersIcon, FolderPlus,Target,Info
 } from 'lucide-react';
 import './App.css';
 // Login Component
